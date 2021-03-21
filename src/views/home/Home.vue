@@ -1,10 +1,13 @@
 <template>
   <div class="home">
-    <h1>
-      Locale is: {{ locale }}
-    </h1>
-    <HelloWorld
-      msg="Welcome to Your Vuetified Typed Awesome App"
+    <MonacoEditor
+      width="800"
+      height="500"
+      theme="vs-light"
+      original="..."
+      value="declare"
+      :options="options"
+      @change="onChange"
     />
   </div>
 </template>

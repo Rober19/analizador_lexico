@@ -7,16 +7,22 @@ import { SIGN_IN } from '@/store/modules/user/actions';
 
 import HelloWorld from '@/components/HelloWorld.vue';
 import { GET_LOCALE } from '@/store/root/actions';
-
+// import MonacoEditor from 'monaco-editor-vue';
+import MonacoEditor from 'vue-monaco-editor'
 
 const UserModule = namespace(userModule.vuexName);
 
 @Component({
     components: {
-        HelloWorld
+        HelloWorld,
+        MonacoEditor
     }
 })
 export default class Home extends Vue {
+
+    public options: any = {
+
+    }
 
     @Getter(LOCALE)
     public locale: string;
@@ -31,4 +37,8 @@ export default class Home extends Vue {
         this.getLocale();
         this.signIn();
     }
+
+    onChange(value: any) {
+        // console.log(value);
+      }
 }
