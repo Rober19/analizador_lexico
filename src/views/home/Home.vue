@@ -1,14 +1,24 @@
 <template>
   <div class="home">
-    <MonacoEditor
-      width="800"
-      height="500"
-      theme="vs-light"
-      original="..."
-      value="declare"
-      :options="options"
-      @change="onChange"
-    />
+    <v-layout row wrap>
+      <v-flex xs12 md12>
+        <MonacoEditor
+          ref="monaco"
+          @change="changeValue"
+          :opts="opts"
+          :height="300"
+          :width="1200"
+          :value_editor="defaul_code"
+        />
+      </v-flex>
+
+      <v-flex xs12 md12>
+        <v-container>
+          <v-btn @click="check(defaul_code)">Check</v-btn>
+          <v-treeview :items="items"></v-treeview>
+        </v-container>
+      </v-flex>
+    </v-layout>
   </div>
 </template>
 
