@@ -29,7 +29,7 @@ export default class Home extends Vue {
 
     public declaraciones_vars_array: any = []
 
-    public defaul_code = `
+    public default_code = `
 Inicio
     declare a,1b entero;
     declare x real;
@@ -50,11 +50,8 @@ Fin
         {
             id: 1,
             name: 'Declaracion de Variables :',
-            children: [
-                // { id: 2, name: 'Calendar : app' },
-                // { id: 3, name: 'Chrome : app' },
-                // { id: 4, name: 'Webstorm : app' },
-            ],
+            icon: 'mdi-package-variant',
+            children: []
         }
     ];
 
@@ -76,7 +73,7 @@ Fin
 
             counter++;
 
-            console.log(`\n MATCH ${counter} \n`);
+            // console.log(`\n MATCH ${counter} \n`);
 
             const [
                 entire_string,
@@ -85,35 +82,161 @@ Fin
                 data_type
             ]: any = m;
 
-            console.log({
-                declare,
-                segmento_variable,
-                data_type,
-            });
+            // console.log({
+            //     declare,
+            //     segmento_variable,
+            //     data_type,
+            // });
 
             this.declaraciones_vars_array.push(
-                {
-                    id: counter,
-                    name: `Declaración: ${entire_string}`,
-                    children: [
-                        {
-                            id: 1,
-                            name: `Segmento Varible: ${segmento_variable}`,
-                        },
-                        {
-                            id: 2,
-                            name: `Tipo de Dato: ${data_type}`,
-                        }
-                    ]
-                }
+                this.checkVariableMetadata({ segmento_variable, data_type, counter })
             )
 
         }
 
+        // cargar variables al arbol
         this.items[0].children = this.declaraciones_vars_array;
-        console.log(this.items[0])
 
-        const validation2 = str.match(/[a-zA-Z][_0-9a-zA-Z]{0,15}/gm);
+
+
+
+
+    }
+
+    mounted() {
+        this.check(this.default_code)
+    }
+
+    checkVariableMetadata({ counter, segmento_variable, data_type }: any) {
+
+
+        const checkVariableName = (name_dirty: string | any) => {
+
+
+            //clean name
+            const name = name_dirty.replace(/^\s+|\s+$/g, '')           
+         
+            const filterProcessor = [
+                {
+                    regex: new RegExp(/^[a-zA-Z](.*)/g),
+                    error: 'Debe iniciar con un letra'
+                },
+                {
+                    regex: new RegExp(/^[a-zA-Z][\W\w]*$/g),
+                    error: 'No debe tener espacios'
+                },
+                {
+                    regex: new RegExp(/^[a-zA-Z][\w]*$/g),
+                    error: 'No debe incluir caracteres especiales'
+                },
+                {
+                    regex: new RegExp(/^[a-zA-Z][_0-9a-zA-Z]{0,15}$/g),
+                    error: 'No debe sobrepasar el limite establecido de 15 caracteres'
+                },
+            ]
+
+            for (const filter of filterProcessor) {
+                if (!filter.regex.test(name)) {
+
+                    console.log({
+                        name,
+                        error: filter.error
+                    })
+
+                    return filter.error;
+                }
+            }
+
+            return false;
+
+        }
+
+        if (segmento_variable.includes(',')) {
+
+            const sub_variables: any = [];
+
+            (segmento_variable.split(/[,]+/)).forEach((name: any, id: any) => {
+
+                const errorsOnName = checkVariableName(name);
+
+                sub_variables.push({
+                    name,
+                    id,
+                    icon: (errorsOnName) ? 'mdi-alert-outline' : 'mdi-check-bold',
+                    icon_color: (errorsOnName) ? 'red' : 'green',
+                    ...((() => {
+                        if (errorsOnName) return {
+                            children: [
+                                {
+                                    id: 0,
+                                    name: `ESTADO: ${(errorsOnName) ? errorsOnName : 'Correcto'}`,
+                                    icon_color: (errorsOnName) ? 'red' : 'green',
+                                    icon: (errorsOnName) ? 'mdi-alert-outline' : 'mdi-check-bold'
+                                }
+                            ]
+                        }
+                        else return {}
+                    })())
+                })
+            });
+
+            const errorOnSubVars = sub_variables.some((sub_var: any) => sub_var.icon_color === 'red')
+
+            return {
+                id: counter,
+                name: `${segmento_variable}`,
+                icon: (errorOnSubVars) ? 'mdi-alert-outline' : 'mdi-check-bold',
+                icon_color: (errorOnSubVars) ? 'red' : 'green',
+                children: [
+                    {
+                        id: 1,
+                        name: `Varibles:`,
+                        children: sub_variables,
+                        icon: 'mdi-cube-outline'
+                    },
+                    {
+                        id: 2,
+                        name: `Tipo de Dato: ${data_type}`,
+                        icon: 'mdi-timeline-text-outline'
+                    }
+                ]
+            }
+
+
+        } else {
+
+            const errorsOnName = checkVariableName(segmento_variable);
+
+            const status: any = () => {
+                if (errorsOnName) return [{
+                    id: 2,
+                    name: `ESTADO: ${(errorsOnName) ? errorsOnName : 'Correcto'}`,
+                    icon: (errorsOnName) ? 'mdi-alert-outline' : 'mdi-check-bold',
+                    icon_color: (errorsOnName) ? 'red' : 'green',
+                }]
+                return []
+            }
+
+            return {
+                id: counter,
+                name: `${segmento_variable}`,
+                icon: (errorsOnName) ? 'mdi-alert-outline' : 'mdi-check-bold',
+                icon_color: (errorsOnName) ? 'red' : 'green',
+                children: [
+                    {
+                        id: 1,
+                        name: `Tipo de Dato: ${data_type}`,
+                        icon: 'mdi-timeline-text-outline',
+                        icon_color: '',
+                    },
+                    ...status()
+                ]
+            }
+        }
+
+
+
+
 
     }
 
@@ -134,7 +257,8 @@ Fin
     // 编辑内容
     changeValue(val: any) {
         // eslint-disable-next-line no-console
-        this.defaul_code = val;
+        this.default_code = val;
+        this.check(this.default_code)
         // console.log(val)
     }
 
