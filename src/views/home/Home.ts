@@ -55,6 +55,15 @@ Fin
         }
     ];
 
+    public tree_keywords: any = [
+        {
+            id: 1,
+            name: 'Palabras Reservadas :',
+            icon: 'mdi-script-text-key-outline',
+            children: []
+        }
+    ];
+
 
 
     ValidationVariables(str: string) {
@@ -114,8 +123,8 @@ Fin
 
 
             //clean name
-            const name = name_dirty.replace(/^\s+|\s+$/g, '')           
-         
+            const name = name_dirty.replace(/^\s+|\s+$/g, '')
+
             const filterProcessor = [
                 {
                     regex: new RegExp(/^[a-zA-Z](.*)/g),
@@ -240,13 +249,51 @@ Fin
 
     }
 
-    ValidationPalabrasReservadas() {
+    ValidationPalabrasReservadas(text: any) {
+
+        const arrayOfLines = text.split(/\n/g);
+
+        const match_regex = /(?<![\w\d])(inicio|si|entonces|sino|finsi|mq|finmq|para|finpara|haga|declare|envia|recibe|llamar|fin|entero|real|cadena|fecha|logico|Inicio|Si|Entonces|Sino|FinSi|MQ|FinMQ|Para|FinPara|Haga|Declare|Envia|Recibe|Llamar|Fin|Entero|Real|Cadena|Fecha|Logico)(?![\w\d])/gm
+
+
+        // const matchs = text.match(/(?<![\w\d])(Inicio|Si|Entonces|Sino|FinSi|MQ|FinMQ|Para|FinPara|Haga|Declare|Envia|Recibe|Llamar|Fin|Entero|Real|Cadena|Fecha|Logico)(?![\w\d])/gm)
+
+        // const matchs = text.match(/(?<![\w\d])(inicio|si|entonces|sino|finsi|mq|finmq|para|finpara|haga|declare|envia|recibe|llamar|fin|entero|real|cadena|fecha|logico|)(?![\w\d])/gm)
+        const keywordsFound: any = []
+
+        console.log('ValidationPalabrasReservadas', {})
+
+        arrayOfLines.forEach((line_string: string, index: any) => {
+            const matched = line_string.match(match_regex)
+            if (matched) {
+
+                keywordsFound.push({
+                    id: index,
+                    name: `${matched}`,
+                    icon: 'mdi-alpha-w-box',
+                    children: [
+                        {
+                            id: 0,
+                            name: `Linea: ${index + 1}`
+                        }
+                    ]
+                })
+
+            }
+
+
+        });
+
+
+
+        this.tree_keywords[0].children = keywordsFound;
 
     }
 
 
     check(text: any) {
         this.ValidationVariables(text)
+        this.ValidationPalabrasReservadas(text)
         console.log(this.declaraciones_vars_array)
     }
 
