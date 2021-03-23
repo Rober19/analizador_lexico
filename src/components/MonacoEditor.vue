@@ -3,15 +3,10 @@
 </template>
 
 <script>
-// 导入
+//
 import * as monaco from 'monaco-editor';
-// import vLang from '@/util/aviator-language';
-import vLang2 from '@/util/fase_1_lang';
-// import vCompletion from '@/util/custom-completion'
-// import vMath from '@/util/math-completion'
-// import vString from '@/util/string-completion'
-// import vSeq from '@/util/seq-completion'
-import myCoolTheme from '@/util/myCoolTheme';
+import Fase1Language from '@/util/languaje_config';
+import Fase1Theme from '@/util/color_theme';
 export default {
   props: {
     height: {
@@ -36,13 +31,13 @@ export default {
   name: 'monacoEditor',
   data() {
     return {
-      editorValue: '123', //编辑器内容
-      editor: null, //编辑器对象实例
-      editorOptions: null, //编辑器配置项
-      // 主要配置
+      editorValue: '', //
+      editor: null, //
+      editorOptions: null, //
+      // 
       defaultOpts: {
-        language: 'Aviator', //语言
-        theme: 'myCoolTheme', //主题
+        language: 'Aviator', //
+        theme: 'Fase1Theme', //
       },
     };
   },
@@ -62,10 +57,10 @@ export default {
         id: 'Aviator',
       });
       // 为该自定义语言基本的Token
-      monaco.languages.setMonarchTokensProvider('Aviator', vLang2);
+      monaco.languages.setMonarchTokensProvider('Aviator', Fase1Language);
 
       // 定义一个仅包含与该语言匹配的规则的新主题
-      monaco.editor.defineTheme('myCoolTheme', myCoolTheme);
+      monaco.editor.defineTheme('Fase1Theme', Fase1Theme);
 
       // 为该语言注册一个语言提示器--联想(提示)
 
@@ -111,7 +106,7 @@ export default {
 
       this.editorOptions = Object.assign(this.defaultOpts, this.opts);
 
-    //   console.log('props', this.value_editor);
+      //   console.log('props', this.value_editor);
 
       // 创建编辑器
       this.editor = monaco.editor.create(this.$refs.container, {

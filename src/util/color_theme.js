@@ -9,8 +9,8 @@ export default {
     { token: 'variable', foreground: '038cfc' },
     {
       token: 'comment',
-      foreground: 'ffa500',
-      fontStyle: 'italic underline',
+      foreground: '61728f',
+      fontStyle: '',
     },
   ],
 };

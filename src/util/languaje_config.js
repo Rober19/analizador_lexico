@@ -7,6 +7,7 @@ export default {
       [/(?:function|Inicio|Fin|si|entonces|sino|finsi)\b/, 'reservada'],
       [/(?:declare|entero|real|recibe|envia)\b/, 'declarators'],
       [/[-+\/*=<>!]+/, 'operator'],
+      [/#.*/, 'comment'],
     ],
 
     common: [],
