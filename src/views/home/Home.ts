@@ -1,11 +1,9 @@
 import { Component, Vue } from 'vue-property-decorator';
-import { Getter, Action, namespace } from 'vuex-class';
+import { namespace } from 'vuex-class';
 
-import { LOCALE } from '@/store/root/getters';
 import userModule from '@/store/modules/user';
-import { SIGN_IN } from '@/store/modules/user/actions';
 
-import HelloWorld from '@/components/HelloWorld.vue';
+// import HelloWorld from '@/components/HelloWorld.vue';
 import MonacoEditor from '@/components/MonacoEditor.vue';
 import { GET_LOCALE } from '@/store/root/actions';
 // import MonacoEditor from 'monaco-editor-vue';
@@ -15,16 +13,16 @@ const UserModule = namespace(userModule.vuexName);
 
 @Component({
     components: {
-        HelloWorld,
+        // HelloWorld,
         MonacoEditor
     }
 })
 export default class Home extends Vue {
 
     public opts: any = {
-        value: '',//编辑器初始化输入内容
-        autoIndent: true,//启用自动缩进调整。默认为false。
-        roundedSelection: true // 右侧不显示编辑器预览框
+        value: '',
+        autoIndent: true,
+        roundedSelection: true
     }
 
     public declaraciones_vars_array: any = []
@@ -253,31 +251,51 @@ Fin
 
         const arrayOfLines = text.split(/\n/g);
 
+        // Mayusculas y minusculas
         const match_regex = /(?<![\w\d])(inicio|si|entonces|sino|finsi|mq|finmq|para|finpara|haga|declare|envia|recibe|llamar|fin|entero|real|cadena|fecha|logico|Inicio|Si|Entonces|Sino|FinSi|MQ|FinMQ|Para|FinPara|Haga|Declare|Envia|Recibe|Llamar|Fin|Entero|Real|Cadena|Fecha|Logico)(?![\w\d])/gm
 
-
+        // Solo mayusculas
         // const matchs = text.match(/(?<![\w\d])(Inicio|Si|Entonces|Sino|FinSi|MQ|FinMQ|Para|FinPara|Haga|Declare|Envia|Recibe|Llamar|Fin|Entero|Real|Cadena|Fecha|Logico)(?![\w\d])/gm)
 
+        // Solo minusculas
         // const matchs = text.match(/(?<![\w\d])(inicio|si|entonces|sino|finsi|mq|finmq|para|finpara|haga|declare|envia|recibe|llamar|fin|entero|real|cadena|fecha|logico|)(?![\w\d])/gm)
-        const keywordsFound: any = []
 
-        console.log('ValidationPalabrasReservadas', {})
+        const keywordsFound: any = []  
 
         arrayOfLines.forEach((line_string: string, index: any) => {
             const matched = line_string.match(match_regex)
+
+            const buildTreeKeyword = (word: string) => {
+                const IndexFound = keywordsFound.findIndex((sub_keyword: any) => sub_keyword.name === word)
+
+                if (IndexFound > -1) {
+                    const id_s = keywordsFound[IndexFound].children.length;
+                    keywordsFound[IndexFound].children.push({
+                        id: id_s,
+                        name: `Linea: ${index + 1}`
+                    })
+                } else {
+                    keywordsFound.push({
+                        id: keywordsFound.length,
+                        name: `${word}`,
+                        icon: 'mdi-alpha-w-box',
+                        children: [
+                            {
+                                id: 0,
+                                name: `Linea: ${index + 1}`
+                            }
+                        ]
+                    })
+                }
+            }
+
             if (matched) {
 
-                keywordsFound.push({
-                    id: index,
-                    name: `${matched}`,
-                    icon: 'mdi-alpha-w-box',
-                    children: [
-                        {
-                            id: 0,
-                            name: `Linea: ${index + 1}`
-                        }
-                    ]
-                })
+                if (Array.isArray(matched))
+                    matched.forEach((word: string) => buildTreeKeyword(word))
+                else
+                    buildTreeKeyword(matched)
+
 
             }
 
