@@ -119,7 +119,6 @@ Fin
 
         const checkVariableName = (name_dirty: string | any) => {
 
-
             //clean name
             const name = name_dirty.replace(/^\s+|\s+$/g, '')
 
@@ -315,16 +314,13 @@ Fin
         console.log(this.declaraciones_vars_array)
     }
 
-    getValue() {
-        //@ts-ignore
-        this.$message.info(this.$refs.monaco.getVal())
-    }
-    // 编辑内容
+   
     changeValue(val: any) {
-        // eslint-disable-next-line no-console
+        //     
         this.default_code = val;
+        //
         this.check(this.default_code)
-        // console.log(val)
+
     }
 
 }
