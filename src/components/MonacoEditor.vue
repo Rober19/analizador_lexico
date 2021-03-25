@@ -79,15 +79,14 @@ export default {
       this.$refs.container.innerHTML = '';
 
       this.editorOptions = Object.assign(this.defaultOpts, this.opts);
-
-      //   console.log('props', this.value_editor);
+ 
 
       // 
       this.editor = monaco.editor.create(this.$refs.container, {
         ...this.editorOptions,
         value: this.value_editor,
       });
-      // 编辑器内容发生改变时触发
+      // 
       this.editor.onDidChangeModelContent(() => {
         this.$emit('change', this.editor.getValue());
         this.editorValue = this.editor.getValue();

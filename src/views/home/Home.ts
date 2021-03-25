@@ -259,9 +259,13 @@ Fin
         // Solo minusculas
         // const matchs = text.match(/(?<![\w\d])(inicio|si|entonces|sino|finsi|mq|finmq|para|finpara|haga|declare|envia|recibe|llamar|fin|entero|real|cadena|fecha|logico|)(?![\w\d])/gm)
 
-        const keywordsFound: any = []  
+        const keywordsFound: any = []
 
         arrayOfLines.forEach((line_string: string, index: any) => {
+
+            const isComment = /#.*/g.test(line_string);
+            if (isComment) return;
+
             const matched = line_string.match(match_regex)
 
             const buildTreeKeyword = (word: string) => {
@@ -290,6 +294,7 @@ Fin
 
             if (matched) {
 
+                // 
                 if (Array.isArray(matched))
                     matched.forEach((word: string) => buildTreeKeyword(word))
                 else
@@ -314,7 +319,7 @@ Fin
         console.log(this.declaraciones_vars_array)
     }
 
-   
+
     changeValue(val: any) {
         //     
         this.default_code = val;
