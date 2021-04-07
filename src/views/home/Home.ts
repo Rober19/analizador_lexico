@@ -31,7 +31,7 @@ export default class Home extends Vue {
 Inicio
     declare a,1b entero;
     declare x real;
-    declare i real;
+    declare i fecha;
     recibe(x);
     a = 5;
     b = 2;
@@ -293,20 +293,16 @@ Fin
             }
 
             if (matched) {
-
                 // 
                 if (Array.isArray(matched))
                     matched.forEach((word: string) => buildTreeKeyword(word))
                 else
                     buildTreeKeyword(matched)
 
-
             }
 
 
         });
-
-
 
         this.tree_keywords[0].children = keywordsFound;
 

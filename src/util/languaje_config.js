@@ -5,7 +5,7 @@ export default {
       [/"(?:[^\\]|\\.)*?(?:"|$)/, 'string'],
       [/'(?:[^\\]|\\.)*?(?:'|$)/, 'string'],
       [/(?:function|Inicio|Fin|si|entonces|sino|finsi)\b/, 'reservada'],
-      [/(?:declare|entero|real|recibe|envia)\b/, 'declarators'],
+      [/(?:declare|entero|real|recibe|fecha|envia)\b/, 'declarators'],
       [/[-+\/*=<>!]+/, 'operator'],
       [/#.*/, 'comment'],
     ],
