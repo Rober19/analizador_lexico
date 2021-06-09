@@ -7,12 +7,12 @@ Vue.use(VueRouter);
 
 const routes: RouteConfig[] = [
   {
-    path: '/',
+    path: '/ss',
     name: 'home',
     component: Home
   },
   {
-    path: '/sp',
+    path: '/',
     name: 'Simple Present Validator',
     component: SimplePresent
   }
