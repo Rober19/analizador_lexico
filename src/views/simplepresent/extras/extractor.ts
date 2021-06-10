@@ -20,8 +20,8 @@ interface IValidator {
 
 export const regex_validator: IValidator[] = [
   {
-    type: 'article + common/proper noun (singular) + verb ( to be (singular) ) + complement ([a-zA-Z]+) ',
-    regex: new RegExp(`^(${resourses_gramar.articles.singular.join('|')})\\b( *)(${resourses_gramar.nouns.common.singular.join('|')})\\b( *)(${resourses_gramar.verbs.to_be.present.singular.join('|')})\\b( *)([a-zA-Z]+)`),
+    type: 'article + common noun (singular 3rd Person) + verb ( to be (singular) ) + complement ([a-zA-Z]+) ',
+    regex: new RegExp(`^(${resourses_gramar.articles.singular.join('|')})\\b( *)(${resourses_gramar.nouns.common.singular.join('|')})\\b( *)(${resourses_gramar.verbs.to_be.present.singular_3rd.join('|')})\\b( *)([a-zA-Z]+)`),
     post_regex: [
       (matchs: any, tence: string) => {
         matchs = matchs.filter((element: string) => element.trim());
@@ -34,7 +34,7 @@ export const regex_validator: IValidator[] = [
 
         const extracted_data = [
           { content: artcl, type: 'article' },
-          { content: subj, type: 'subject' },
+          { content: subj, type: 'common noun' },
           { content: verb, type: 'verb' },
           { content: compl, type: 'complement' },
         ]
@@ -58,45 +58,12 @@ export const regex_validator: IValidator[] = [
           message: `The use of article 'an' is ${(validator) ? 'correct' : 'wrong'}`
         }
 
-      },
-      // (matchs: any, tence: string, extra: any) => {
-
-      //   // console.log(tence)
-
-      //   const [entire, artcl, subj] = matchs;
-
-      //   // console.log(`${tence + ' | ' + entire}`)
-      //   const predicate = (`${tence.replace(entire, '').trimStart().trimEnd()}`)
-
-      //   let match_inside_predicate: any = predicate.match(
-      //     new RegExp(`^(${resourses_gramar.verbs.to_be.present.singular.join('|')})\\b( *)(${resourses_gramar.adjetives.singular.join('|')})\\b`)
-      //   )
-
-      //   if (Array.isArray(match_inside_predicate)) match_inside_predicate = match_inside_predicate.filter((element: string) => element.trim());
-
-      //   console.log('match_inside_predicate', match_inside_predicate)
-
-      //   // console.log(matchs)
-
-      //   return extra;
-
-      //   // `an` solo se puede usar cuando viene una palabra con inicial vocal
-      //   // const validator = new RegExp(`^(an)\\b( *)([aeiou])`).test(tence)
-
-      //   // return {
-      //   //   tence,
-      //   //   matchs,
-      //   //   data: [],
-      //   //   validation_result: validator,
-      //   //   message: `The use of article 'an' is ${(validator) ? 'correct' : 'wrong'}`
-      //   // }
-
-      // }
+      },      
     ]
   },
   {
-    type: 'article + common/proper noun (singular) + verb ( to be (singular) ) + complement (.*) ',
-    regex: new RegExp(`^(${resourses_gramar.articles.singular.join('|')})\\b( *)(${resourses_gramar.nouns.common.singular.join('|')})\\b( *)(${resourses_gramar.verbs.to_be.present.singular.join('|')})\\b( *)(.*)`),
+    type: 'article + common noun (singular 3rd Person) + verb ( to be (singular) ) + complement (.*) ',
+    regex: new RegExp(`^(${resourses_gramar.articles.singular.join('|')})\\b( *)(${resourses_gramar.nouns.common.singular.join('|')})\\b( *)(${resourses_gramar.verbs.to_be.present.singular_3rd.join('|')})\\b( *)(.*)`),
     post_regex: [
       (matchs: any, tence: string) => {
         matchs = matchs.filter((element: string) => element.trim());
@@ -109,7 +76,7 @@ export const regex_validator: IValidator[] = [
 
         const extracted_data = [
           { content: artcl, type: 'article' },
-          { content: subj, type: 'subject' },
+          { content: subj, type: 'common noun' },
           { content: verb, type: 'verb' },
           { content: compl, type: 'complement' },
         ]
@@ -138,7 +105,7 @@ export const regex_validator: IValidator[] = [
     ]
   },
   {
-    type: 'article + common/proper noun (plural) + verb ( to be (singular) ) + complement (.*) ',
+    type: 'article + common noun (plural) + verb ( to be (singular) ) + complement (.*) ',
     regex: new RegExp(`^(${resourses_gramar.articles.plural.join('|')})\\b( *)(${resourses_gramar.nouns.common.plural.join('|')})\\b( *)(${resourses_gramar.verbs.to_be.present.plural.join('|')})\\b( *)(.*)`),
     post_regex: [
       (matchs: any, tence: string) => {
@@ -152,7 +119,7 @@ export const regex_validator: IValidator[] = [
 
         const extracted_data = [
           { content: artcl, type: 'article' },
-          { content: subj, type: 'subject' },
+          { content: subj, type: 'common noun' },
           { content: verb, type: 'verb' },
           { content: compl, type: 'complement' },
         ]
@@ -182,16 +149,43 @@ export const regex_validator: IValidator[] = [
     ]
   },
   {
-    type: 'possessive noun + common noun',
+    type: 'possessive noun + common noun (singular) + verb + complement',
     regex: new RegExp(`^(${resourses_gramar.nouns.possessive.join('|')})\\b( *)(${[
       ...resourses_gramar.nouns.common.singular,
-      ...resourses_gramar.nouns.common.plural
-    ].join('|')})\\b`),
+      // ...resourses_gramar.nouns.common.plural
+    ].join('|')})\\b( *)(${[
+      ...resourses_gramar.verbs.to_be.present.singular_3rd,
+      // ...resourses_gramar.nouns.common.plural
+    ].join('|')})\\b( *)(.*)`),
+    post_regex: [
+      (matchs: any, tence: string) => {
+        matchs = matchs.filter((element: string) => element.trim());
+
+        const [entire, possesive, noun,  verb, complement] = matchs;
+
+        console.log(matchs)
+        // if (!(/(an)\b/.test(result)))
+
+        return {
+          matchs,
+          tence,
+          data: [
+            { type: 'possessive noun', content: possesive },
+            { type: 'common noun', content: noun },
+            { type: 'verb', content: verb },
+        
+            // // { type: 'auxiliar', content: aux },
+            // { type: 'verb', content: verb },
+            { type: 'complement', content: complement },
+          ],
+          validation_result: true,
+          message: 'it\'s correct'
+        }
+
+      }
+    ]
   },
-  {
-    type: 'possessive noun + adjetive', // his anger, her beauty
-    regex: / () /,
-  },
+
   {
     type: 'personal noun (1st Person) + verb (main (singular) )', // I Like pizza, I Run
     regex: new RegExp(`^(${[
@@ -207,7 +201,7 @@ export const regex_validator: IValidator[] = [
       ...resourses_gramar.nouns.first_p.singular.subjetive,
       // ...resourses_gramar.nouns.third_p.plural.subjetive,
     ].join('|')})\\b( *)(${[
-      ...resourses_gramar.verbs.to_be.present.singular
+      ...resourses_gramar.verbs.to_be.present.singular_1st
     ].join('|')})\\b`)
   },
   {
@@ -225,7 +219,7 @@ export const regex_validator: IValidator[] = [
     ].join('|')})\\b`)
   },
   {
-    type: 'personal noun (3rd Plural Person) + verb (plural)', // He eats, He runs
+    type: 'personal noun (3rd Plural Person) + verb (singular)', // He eats, He runs
     regex: new RegExp(`^(${[
       ...resourses_gramar.nouns.third_p.plural.subjetive,
     ].join('|')})\\b( *)(${[
@@ -254,7 +248,7 @@ export const regex_validator: IValidator[] = [
           matchs,
           tence,
           data: [
-            { type: 'subject', content: subj },           
+            { type: 'personal noun', content: subj },
             { type: 'verb', content: verb },
             { type: 'complement', content: complement },
           ],
@@ -270,13 +264,13 @@ export const regex_validator: IValidator[] = [
     regex: new RegExp(`^(${[
       ...resourses_gramar.nouns.second_p.contractions.present.singular,
       // ...resourses_gramar.nouns.third_p.plural.subjetive,
-    ].join('|')})\\b`),
+    ].join('|')})\\b(.*)`),
     post_regex: [
       (matchs: any, tence: string) => {
 
         matchs = matchs.filter((element: string) => element.trim());
 
-        const [entire, subj, aux, verb] = matchs;
+        const [entire, subj, comp] = matchs;
 
         console.log(matchs)
         // if (!(/(an)\b/.test(result)))
@@ -285,8 +279,8 @@ export const regex_validator: IValidator[] = [
           matchs,
           tence,
           data: [
-            { type: 'subject + verb (to be)', content: subj },
-            // { type: 'auxiliar', content: aux },
+            { type: 'personal noun + verb (to be)', content: subj },
+            { type: 'complement', content: comp },
             // { type: 'verb', content: verb },
           ],
           validation_result: true,
@@ -330,7 +324,7 @@ export const regex_validator: IValidator[] = [
           matchs,
           tence,
           data: [
-            { type: 'subject', content: subj },
+            { type: 'personal noun', content: subj },
             { type: 'auxiliar', content: aux },
             { type: 'verb', content: verb },
           ],
@@ -365,7 +359,7 @@ export const regex_validator: IValidator[] = [
           matchs,
           tence,
           data: [
-            { type: 'subject', content: subj },
+            { type: 'personal noun', content: subj },
             { type: 'auxiliar', content: aux },
             { type: 'verb', content: verb },
           ],
@@ -377,15 +371,53 @@ export const regex_validator: IValidator[] = [
     ]
   },
   {
-    type: 'demostrative pronoun (singular) + common noun', // this city, these cities 
+    type: 'personal noun (3rd Person) + verb (to be) + complement ', // He does eat, He does run, She does like
+    regex: new RegExp(`^(${[
+      ...resourses_gramar.nouns.third_p.singular.subjetive,
+    ].join('|')})\\b( *)( *)(${[
+      ...resourses_gramar.verbs.to_be.present.singular_3rd
+    ].join('|')})\\b( *)(.*)`),
+    post_regex: [
+      (matchs: any, tence: string) => {
+
+
+
+        matchs = matchs.filter((element: string) => element.trim());
+
+          const [entire, subj, verb, complement] = matchs;
+
+        // console.log(matchs)
+
+        // if (!(/(an)\b/.test(result)))
+
+        return {
+          matchs,
+          tence,
+          data: [
+            { type: 'personal noun', content: subj },
+            { type: 'verb', content: verb },
+            { type: 'complement', content: complement },
+            // { type: 'verb', content: verb },
+          ],
+          validation_result: true,
+          message: 'it\'s correct'
+        }
+
+      }
+    ]
+  },
+  {
+    type: 'demostrative pronoun (singular 3rd Person) + common noun + verb (to be (singular)) + complement (.*)', // this city, these cities 
     regex: new RegExp(`^(${resourses_gramar.nouns.demostrative_pronouns.singular.join('|')})\\b( *)(${[
       ...resourses_gramar.nouns.common.singular,
-    ].join('|')})\\b`),
+    ].join('|')})\\b( *)(${[
+      ...resourses_gramar.verbs.to_be.present.singular_3rd,
+    ].join('|')})\\b( *)(.*)`),
     post_regex: [
       (matchs: any, tence: string) => {
         matchs = matchs.filter((element: string) => element.trim());
 
-        const [entire, dem_pron, subj] = matchs;
+        const [entire, dem_pron, subj, verb, complement] = matchs;
 
         console.log(matchs)
 
@@ -396,9 +428,10 @@ export const regex_validator: IValidator[] = [
           tence,
           data: [
             { type: 'demostrative pronoun', content: dem_pron },
-            { type: 'subject', content: subj },
+            { type: 'common noun', content: subj },
             // { type: 'auxiliar', content: aux },
-            // { type: 'verb', content: verb },
+            { type: 'verb', content: verb },
+            { type: 'complement', content: complement },
           ],
           validation_result: true,
           message: 'it\'s correct'
@@ -409,30 +442,17 @@ export const regex_validator: IValidator[] = [
 
   },
   {
-    type: 'demostrative pronoun (singular) + common noun', // this city, these cities 
+    type: 'demostrative pronoun (plural) + common noun + verb (to be (plural) ) + complement (.*)', // this city, these cities 
     regex: new RegExp(`^(${resourses_gramar.nouns.demostrative_pronouns.plural.join('|')})\\b( *)(${[
       ...resourses_gramar.nouns.common.plural,
-    ].join('|')})\\b`),
-  },
-  {
-    type: 'proper noun + verb (plural)', // Juan runs, Colombia runs
-    regex: new RegExp(`^(${resourses_gramar.nouns.propers.join('|')})\\b( *)(${[
-      ...resourses_gramar.verbs.main.plural,
-    ].join('|')})\\b`),
-  },
-  {
-    type: 'proper noun + verb (to be)', // Cartagena is, Juan is
-    regex: new RegExp(`^(${resourses_gramar.nouns.propers.join('|')})\\b( *)(${[
-      ...resourses_gramar.verbs.to_be.present.singular,
-    ].join('|')})\\b`),
+    ].join('|')})\\b( *)(${[
+      ...resourses_gramar.verbs.to_be.present.plural,
+    ].join('|')})\\b( *)(.*)`),
     post_regex: [
       (matchs: any, tence: string) => {
-
-
-
         matchs = matchs.filter((element: string) => element.trim());
 
-        const [entire, subj, verb] = matchs;
+        const [entire, dem_pron, subj, verb, complement] = matchs;
 
         console.log(matchs)
 
@@ -442,9 +462,74 @@ export const regex_validator: IValidator[] = [
           matchs,
           tence,
           data: [
-            { type: 'subject', content: subj },
+            { type: 'demostrative pronoun', content: dem_pron },
+            { type: 'common noun', content: subj },
             // { type: 'auxiliar', content: aux },
             { type: 'verb', content: verb },
+            { type: 'complement', content: complement },
+          ],
+          validation_result: true,
+          message: 'it\'s correct'
+        }
+
+      }
+    ]
+  },
+  {
+    type: 'proper noun + verb (plural)', // Juan runs, Colombia runs
+    regex: new RegExp(`^(${resourses_gramar.nouns.propers.join('|')})\\b( *)(${[
+      ...resourses_gramar.verbs.main.plural,
+    ].join('|')})\\b`),
+    post_regex: [
+      (matchs: any, tence: string) => {
+        matchs = matchs.filter((element: string) => element.trim());
+
+        const [entire, noun, verb] = matchs;
+
+        console.log(matchs)
+
+        // if (!(/(an)\b/.test(result)))
+
+        return {
+          matchs,
+          tence,
+          data: [
+            { type: 'proper noun', content: noun },
+            { type: 'verb', content: verb },
+          ],
+          validation_result: true,
+          message: 'it\'s correct'
+        }
+
+      }
+    ]
+  },
+  {
+    type: 'proper noun (3rd Person) + verb (to be) + complement (.*)', // Cartagena is, Juan is
+    regex: new RegExp(`^(${resourses_gramar.nouns.propers.join('|')})\\b( *)(${[
+      ...resourses_gramar.verbs.to_be.present.singular_3rd,
+    ].join('|')})\\b( *)(.*)`),
+    post_regex: [
+      (matchs: any, tence: string) => {
+
+
+
+        matchs = matchs.filter((element: string) => element.trim());
+
+        const [entire, subj, verb, complement] = matchs;
+
+        console.log(matchs)
+
+        // if (!(/(an)\b/.test(result)))
+
+        return {
+          matchs,
+          tence,
+          data: [
+            { type: 'proper noun', content: subj },
+            // { type: 'auxiliar', content: aux },
+            { type: 'verb', content: verb },
+            { type: 'complement', content: complement },
           ],
           validation_result: true,
           message: 'it\'s correct'

@@ -6,18 +6,22 @@ export const resourses_gramar = {
   },
   nouns: {
     propers: [
-      'cartagena', 'cartagena city', 'juan', 'ann', 'michael', 'charles'
+      'cartagena', 'cartagena city', 'mary', 'juan', 'ann', 'michael', 'charles'
     ],
     common: {
       singular: [
-        'car', 'table', 'person', 'pencil', 'children', 'city', 'house', 'phone', 'elephant'
+        'car', 'cat', 'table', 'person', 'pencil', 'children', 'city', 'house', 'phone', 'elephant'
       ],
-      plural: ['cities', 'tables', 'people', 'cars', 'houses', 'phones']
+      /**
+       * 
+       * Palabras plurales de todas las categorias
+       * 
+       */
+      plural: ['cities', 'tables', 'people', 'cars', 'houses', 'phones', 'elephants']
     },
     possessive: [
       'his', 'her', 'its', 'their', 'my', 'our', 'your'
-    ],
-    personal: ['i', 'you', 'it', 'he', 'she', 'they'],
+    ], 
     demostrative_pronouns: {
       singular: ['that', 'this'],
       plural: ['those', 'these'],
@@ -77,7 +81,7 @@ export const resourses_gramar = {
       },
       contractions: {
         present: {
-          singular: ['he\'s','she\'s','it\'s'],
+          singular: ['he\'s', 'she\'s', 'it\'s'],
           plural: ['they\'re']
         }
       }
@@ -86,18 +90,19 @@ export const resourses_gramar = {
   verbs: {
     to_be: {
       present: {
-        singular: ['is', 'am'],
+        singular_1st: ['am'],
+        singular_3rd: ['is'],
         plural: ['are'],
       },
       past: {
         singular: ['was'],
         plural: ['were'],
       },
-      progressive: ['running', 'eating']
+      progressive: ['running', 'eating', 'shining']
     },
     main: {
-      singular: ['eat', 'like', 'talk', 'run', 'jump'],
-      plural: ['eats', 'likes', 'talks', 'runs', 'jumps'],
+      singular: ['eat', 'like', 'talk', 'run', 'jump', 'shine'],
+      plural: ['eats', 'likes', 'talks', 'runs', 'jumps', 'shines'],
     }
   },
   adjetives: {
